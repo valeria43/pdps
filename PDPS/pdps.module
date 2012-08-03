@@ -1,0 +1,241 @@
+<?php
+include 'forms/add_dataset.php';
+include 'forms/add_collaborator.php';
+include 'forms/add_document.php';
+include 'forms/pdpsHome.php';
+include 'forms/view_dataset_information.php';
+include 'forms/view_dataset_collaborators.php';
+include 'forms/view_documents.php';
+include 'forms/view_document.php';
+include 'forms/add_dataset_collaborator.php';
+include 'forms/delete_dataset_collaborators.php';
+include 'forms/delete_dataset_documents.php';
+
+include 'forms/classes/display_manager.php';
+include 'forms/classes/message_catalog.php';
+include 'forms/collaborator_list.php';
+
+define('PDPS_PERMISSION', 'Be able to access the PDPS content');
+
+function pdps_menu()
+{
+	$items = array();
+	
+	/*$items['addDataset'] = array(
+		'title' 	=> 'Add Dataset',
+		'page callback' => 'drupal_get_form',
+		//'page arguments' => array('add_dataset_form'),
+		'page arguments' => array('add_dataset_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'type' => MENU_LOCAL_TASK,
+	);*/
+	
+	/*$items['home'] = array(
+		'title' => 'Home',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('pdps_home_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'type' => MENU_NORMAL_ITEM,
+	);*/
+	
+	/*$items['mylink'] = array(
+		'title' 	=> 'My Link',
+		'access arguments' => array('administer users'),
+		'type' => MENU_DEFAULT_LOCAL_TASK,
+		'weight' => 0,
+	);*/
+	
+	//No not remove comment from type
+	$items['node/dataset_list'] = array(
+		//'type' => MENU_LOCAL_TASK,
+		//'page callback' => '_menu_example_menu_page',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('pdps_home_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'weight' => 5,
+	);
+
+	
+	$items['node/dataset_list'] = array(
+		'type' => MENU_LOCAL_TASK,
+		'title' => 'Dataset List',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('pdps_home_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'weight' => 6,
+	);
+		
+	$items['node/addDataset'] = array(
+		'type' => MENU_LOCAL_TASK,
+		'title' => 'Add Dataset',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('add_dataset_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'weight' => 7,
+	);
+		
+	$items['node/addCollaborator'] = array(
+		'type' => MENU_LOCAL_TASK,
+		'title' => 'Add Collaborator',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('add_collaborator_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'weight' =>8,
+	);
+	
+	$items['node/collaboratorList'] = array(
+		'type' => MENU_LOCAL_TASK,
+		'title' => 'Collaborators',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('collaborator_list_form'),
+		//'access callback' => TRUE,
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'weight' => 9,
+	);
+	
+	$items['addCollaborator'] = array(
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('add_collaborator_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	
+	$items['addDocument'] = array(
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('add_document_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	//deleteDocs
+	$items['deleteDocs'] = array(
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('view_documents_to_delete_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	
+	$items['viewDatasetInformation'] = array(
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('view_dataset_information_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	
+	$items['viewCollaborators'] = array(
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('view_dataset_collaborators_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	
+	$items['viewDocuments'] = array(
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('view_documents_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	
+	$items['manageCollaborators'] = array(
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('manage_collaborators_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	
+	$items['manageDatasets'] = array(
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('manage_datasets_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	
+	$items['deleteDatasets'] = array(
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('delete_datasets_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	
+	$items['viewDocument'] = array(
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('view_dataset_document_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	
+	$items['addDatasetCollaborator'] = array(
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('add_dataset_collaborator_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	
+	
+	//delete_dataset_collaborator_form
+	
+	$items['deleteDatasetCollaborators'] = array(
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('delete_dataset_collaborator_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	
+	$items['deleteDatasetDocuments'] = array(
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('delete_dataset_documents_form'),
+		'access arguments' => array('PDPS PERMISSIONS'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	
+/*	$items['dynamic_table'] = array(
+		'title' => 'Dynamic Table',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('dynamic_table_form'),
+		'access arguments' => array('administer users'),
+		'type' => MENU_NORMAL_ITEM,
+	);*/
+	
+/*	$items['dynamic_file_uplodad'] = array(
+		'title' => 'Dynamic File UPload',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('ajax_example_add_more_form'),
+		'access arguments' => array('administer users'),
+		'type' => MENU_NORMAL_ITEM,
+	);*/
+	
+	//ajax_example_simplest
+/*	$items['dynamic_select'] = array(
+		'title' => 'Dynamic Select',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('ajax_example_simplest_form'),
+		'access arguments' => array('administer users'),
+		'type' => MENU_NORMAL_ITEM,
+	);*/
+	
+	return $items;
+}
+
+
+function pdps_permission()
+{
+	return array(
+		'PDPS PERMISSIONS' => array(
+									'title' => 'Private Dataset Preservation System Permissions',
+									'description' => 'Access the Private Dataset Preservation System forms',
+								),
+	);
+}
+
+/*function _menu_example_menu_page($content = NULL, $arg1 = NULL, $arg2 = NULL) {
+  $output =  '<div>' . $content . '</div>';
+
+  if (!empty($arg1)) {
+    $output .= '<div>' . t('Argument 1=%arg', array('%arg' => $arg1)) . '</div>';
+  }
+  if (!empty($arg2)) {
+    $output .= '<div>' . t('Argument 2=%arg', array('%arg' => $arg2)) . '</div>';
+  }
+  return $output;
+}*/
+
+?>

@@ -1,0 +1,196 @@
+<?php
+
+function pdps_enable()
+{
+	$role_id = db_insert('role')->fields(
+		array(
+			'name' => 'pdps user',
+			'weight' => 3,
+		)
+	)->execute();
+	
+	
+	
+	$role_permissions_1 = db_insert('role_permission')->fields(
+		array(
+			'rid' => 2,
+			'permission' => 'PDPS PERMISSIONS',
+			'module' => 'pdps',
+		)
+	)->execute();
+	
+	$role_permissions_2 = db_insert('role_permission')->fields(
+		array(
+			'rid' => $role_id,
+			'permission' => 'PDPS PERMISSIONS',
+			'module' => 'pdps',
+		)
+	)->execute();
+	
+	$collaborator_table = db_query
+	(
+		'
+			CREATE TABLE IF NOT EXISTS pdps_collaborator
+			(
+				collaborator_id int(100) NOT NULL AUTO_INCREMENT,
+				user_id int(10) NOT NULL,
+				collaborator_name text NOT NULL,
+				collaborator_email text NOT NULL,
+				collaborator_affiliation text NOT NULL,
+				PRIMARY KEY (collaborator_id)
+			) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1
+		'
+	);
+	
+	$dataset_table = db_query
+	(
+		'
+			CREATE TABLE IF NOT EXISTS pdps_dataset
+			(
+				dataset_id int(100) NOT NULL AUTO_INCREMENT,
+				user_id	 int(10) NOT NULL,
+				name	 text NOT NULL,
+				project_name text,
+				owner_name varchar(100) DEFAULT NULL,
+				creation_date_month int(12) DEFAULT NULL,
+				creation_date_day int(31) DEFAULT NULL,
+				creation_date_year int(100) DEFAULT NULL,
+				version_number text,
+				description text,
+				dataset_location_type int(3) DEFAULT NULL,
+				dataset_location_name text,
+				publication_location varchar(100) DEFAULT NULL,
+				publication_date_month int(12) DEFAULT NULL,
+				publication_date_day int(31) DEFAULT NULL,
+				publication_date_year int(100) DEFAULT NULL,
+				archieve_location varchar(100) DEFAULT NULL,
+				archieve_date_month int(12) DEFAULT NULL,
+				archieve_date_day int(31) DEFAULT NULL,
+				archieve_date_year int(100) DEFAULT NULL,
+				is_patented_protected int(1) DEFAULT NULL,
+				patent_number text,
+				reference text,
+				keywords text,
+				PRIMARY KEY (dataset_id)
+			) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 
+		'
+	);
+	
+	$dataset_collaborators_table = db_query
+	(
+		'
+			CREATE TABLE IF NOT EXISTS pdps_dataset_collaborators
+			(
+			  dataset_id int(100) NOT NULL,
+			  collaborator_id int(100) NOT NULL,
+			  role varchar(50) NOT NULL,
+			  collaborator_dataset_contribution text NOT NULL
+			) ENGINE=MyISAM DEFAULT CHARSET=latin1
+		'
+	);
+	
+	$dataset_documents = db_query
+	(
+		'
+			CREATE TABLE IF NOT EXISTS pdps_dataset_documents
+			(
+			  document_id int(100) NOT NULL AUTO_INCREMENT,
+			  dataset_id int(100) NOT NULL,
+			  file_id int(100) NOT NULL,
+			  document_name text,
+			  document_type_id int(100) DEFAULT NULL,
+			  document_application text,
+			  document_description text,
+			  new_other_dataset_type text,
+			  PRIMARY KEY (document_id)
+			) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 
+		'
+	);
+	
+	$document_type_table = db_query
+	(
+		'
+			CREATE TABLE IF NOT EXISTS pdps_document_type
+			(
+				document_type_id int(3) NOT NULL,
+				document_type_name varchar(100) NOT NULL
+			) ENGINE=MyISAM DEFAULT CHARSET=latin1
+		'
+	);
+	
+	db_insert('pdps_document_type')->fields
+	(
+		array(
+			'document_type_id' => 1,
+			'document_type_name' => 'Materials',
+		)
+	)->execute();
+	
+	db_insert('pdps_document_type')->fields
+	(
+		array(
+			'document_type_id' => 2,
+			'document_type_name' => 'Tools',
+		)
+	)->execute();
+	
+	db_insert('pdps_document_type')->fields
+	(
+		array(
+			'document_type_id' => 3,
+			'document_type_name' => 'Supporting Documents',
+		)
+	)->execute();
+	
+	db_insert('pdps_document_type')->fields
+	(
+		array(
+			'document_type_id' => 4,
+			'document_type_name' => 'Methods',
+		)
+	)->execute();
+	
+	db_insert('pdps_document_type')->fields
+	(
+		array(
+			'document_type_id' => 0,
+			'document_type_name' => 'Other',
+		)
+	)->execute();
+	
+	$dataset_document_file_table = db_query
+	(
+		'
+			CREATE TABLE IF NOT EXISTS pdps_files
+			(
+				file_id int(100) NOT NULL AUTO_INCREMENT,
+				file_type int(1) NOT NULL,
+				file_type_id int(100) NOT NULL,
+				file_location text NOT NULL,
+				filename text NOT NULL,
+				PRIMARY KEY (file_id)
+			) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 
+		'
+	);
+	
+	$this_directory = getcwd();
+	$dir 	        = $this_directory.'/sites/default/files/DATASETS';
+	
+	if(!is_dir($dir))
+	{
+		mkdir($dir);
+		chmod($dir, 0755);
+	}
+}
+
+function pdps_disable()
+{
+	
+	$delete_pdps_permission = db_delete('role_permission')->condition('permission','PDPS PERMISSIONS')->execute();
+	
+	$delete_pdps_role = db_delete('role')->condition('name','pdps user')->execute();
+	
+
+}
+
+?>
